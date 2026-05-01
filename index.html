@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Movie Collection - GitHub Pages</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      min-height: 100vh;
+      color: #fff;
+    }
+    .container { max-width: 1400px; margin: 0 auto; padding: 30px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; flex-wrap: wrap; gap: 20px; }
+    .header h1 { font-size: 2.5rem; background: linear-gradient(90deg, #e94560, #ff6b6b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .badges-section { background: rgba(255,255,255,0.05); padding: 30px; border-radius: 20px; border:1px solid rgba(255,255,255,0.1); margin-bottom:40px; }
+    .badges-section h2 { text-align:center; margin-bottom:20px; }
+    .watched-count { text-align:center; margin-bottom:30px; }
+    .watched-count .count { font-size:4rem; font-weight:800; background: linear-gradient(90deg, #00d9ff, #00ff88); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .badges-container { display:grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap:20px; }
+    .badge { padding:25px; border-radius:15px; text-align:center; border:2px solid; }
+    .badge.earned { background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05)); }
+    .badge.locked { opacity:0.4; filter:grayscale(1); }
+    .badge-icon { font-size:3rem; margin-bottom:10px; }
+    .movies-grid { display:grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap:30px; }
+    .movie-card { background: rgba(255,255,255,0.05); border-radius:20px; overflow:hidden; border:1px solid rgba(255,255,255,0.1); }
+    .movie-card.watched { opacity:0.7; }
+    .movie-poster { height:220px; background: linear-gradient(135deg, #667eea, #764ba2); display:flex; flex-direction:column; justify-content:space-between; padding:20px; position:relative; }
+    .year-badge, .genre-tag { background: rgba(0,0,0,0.6); padding:5px 15px; border-radius:20px; width:fit-content; }
+    .genre-tag { background: rgba(255,255,255,0.2); }
+    .watch-btn { position:absolute; bottom:20px; right:20px; padding:10px 20px; background: linear-gradient(135deg, #e94560, #ff6b6b); color:white; border:none; border-radius:25px; text-decoration:none; }
+    .movie-details { padding:25px; }
+    .movie-title { font-size:1.4rem; margin-bottom:8px; }
+    .movie-director { color: rgba(255,255,255,0.6); margin-bottom:15px; }
+    .stars { color:#ffd700; font-size:1.2rem; letter-spacing:2px; }
+    .movie-review { color: rgba(255,255,255,0.7); font-style:italic; margin:15px 0; padding-left:10px; border-left:3px solid #e94560; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎬 Movie Collection</h1>
+    </header>
+
+    <section class="badges-section">
+      <h2>🏅 Your Rewards</h2>
+      <div class="watched-count">
+        <span class="count" id="watchedCount">3</span>
+        <span class="label">movies watched</span>
+      </div>
+      <div class="badges-container" id="badgesContainer"></div>
+      <div class="progress-info" style="text-align:center; margin-top:20px;">
+        <p style="font-size:1.1rem; color: rgba(255,255,255,0.8);">Next badge: <strong>⭐ Film Enthusiast</strong> (2 more movies to watch!)</p>
+      </div>
+    </section>
+
+    <div class="movies-grid" id="moviesGrid"></div>
+  </div>
+
+  <script>
+    const movies = [
+      { id:1, title:'Inception', director:'Christopher Nolan', year:2010, genre:'Sci-Fi', rating:9, watched:true, review:'Mind-bending masterpiece!', watch_url:'https://www.netflix.com' },
+      { id:2, title:'The Shawshank Redemption', director:'Frank Darabont', year:1994, genre:'Drama', rating:10, watched:true, review:'Timeless classic', watch_url:'https://www.amazon.com' },
+      { id:3, title:'The Dark Knight', director:'Christopher Nolan', year:2008, genre:'Action', rating:9, watched:true, review:'Best superhero movie ever', watch_url:'https://www.hbomax.com' },
+      { id:4, title:'Interstellar', director:'Christopher Nolan', year:2014, genre:'Sci-Fi', rating:0, watched:false, review:'', watch_url:'https://www.disneyplus.com' },
+      { id:5, title:'Pulp Fiction', director:'Quentin Tarantino', year:1994, genre:'Crime', rating:0, watched:false, review:'', watch_url:'https://www.hulu.com' },
+      { id:6, title:'The Matrix', director:'The Wachowskis', year:1999, genre:'Sci-Fi', rating:0, watched:false, review:'', watch_url:'https://www.max.com' },
+      { id:7, title:'Forrest Gump', director:'Robert Zemeckis', year:1994, genre:'Drama', rating:0, watched:false, review:'', watch_url:'https://www.paramountplus.com' },
+      { id:8, title:'Fight Club', director:'David Fincher', year:1999, genre:'Thriller', rating:0, watched:false, review:'', watch_url:'https://www.primevideo.com' }
+    ];
+
+    const badges = [
+      { name:'Movie Novice', threshold:1, icon:'🌱', color:'#4ade80' },
+      { name:'Film Enthusiast', threshold:5, icon:'⭐', color:'#60a5fa' },
+      { name:'Cinephile', threshold:10, icon:'🎬', color:'#f472b6' },
+      { name:'Movie Buff', threshold:20, icon:'🏆', color:'#fbbf24' },
+      { name:'Legendary Viewer', threshold:50, icon:'👑', color:'#ef4444' },
+      { name:'IMDB Master', threshold:100, icon:'🌟', color:'#a855f7' }
+    ];
+
+    function renderBadges() {
+      const watchedCount = movies.filter(m => m.watched).length;
+      document.getElementById('watchedCount').textContent = watchedCount;
+      const container = document.getElementById('badgesContainer');
+      container.innerHTML = badges.map(badge => {
+        const earned = watchedCount >= badge.threshold;
+        return `
+          <div class="badge ${earned ? 'earned' : 'locked'}" style="border-color:${badge.color}">
+            <div class="badge-icon">${badge.icon}</div>
+            <div class="badge-name">${badge.name}</div>
+            <div class="badge-threshold">${earned ? '✓ Earned' : badge.threshold + ' movies needed'}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderMovies() {
+      const grid = document.getElementById('moviesGrid');
+      grid.innerHTML = movies.map(movie => {
+        let stars = '';
+        for(let i=0; i<10; i++) stars += i < movie.rating ? '★' : '☆';
+        return `
+          <div class="movie-card ${movie.watched ? 'watched' : ''}">
+            <div class="movie-poster">
+              <span class="year-badge">${movie.year}</span>
+              <span class="genre-tag">${movie.genre}</span>
+              ${movie.watch_url ? `<a href="${movie.watch_url}" target="_blank" class="watch-btn">▶ Watch Now</a>` : ''}
+            </div>
+            <div class="movie-details">
+              <h3 class="movie-title">${movie.title}</h3>
+              <p class="movie-director">Directed by ${movie.director}</p>
+              ${movie.rating > 0 ? `<div class="stars">${stars}</div>` : ''}
+              ${movie.review ? `<p class="movie-review">"${movie.review}"</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    renderBadges();
+    renderMovies();
+  </script>
+</body>
+</html>
