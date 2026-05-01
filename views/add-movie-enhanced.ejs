@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Movie - Enhanced Movie Collection</title>
+  <link rel="stylesheet" href="/css/movies-enhanced.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎬 Add New Movie</h1>
+      <a href="/" class="back-btn">← Back to Collection</a>
+    </header>
+
+    <div class="form-container">
+      <form action="/add" method="POST" class="movie-form">
+        <div class="form-group">
+          <label for="title">Movie Title *</label>
+          <input type="text" id="title" name="title" required placeholder="Enter movie title">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="director">Director</label>
+            <input type="text" id="director" name="director" placeholder="Director's name">
+          </div>
+
+          <div class="form-group">
+            <label for="year">Release Year</label>
+            <input type="number" id="year" name="year" placeholder="YYYY" min="1900" max="2030">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="genre">Genre</label>
+            <select id="genre" name="genre">
+              <option value="">Select genre</option>
+              <option value="Action">Action</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Animation">Animation</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Crime">Crime</option>
+              <option value="Drama">Drama</option>
+              <option value="Fantasy">Fantasy</option>
+              <option value="Horror">Horror</option>
+              <option value="Sci-Fi">Sci-Fi</option>
+              <option value="Thriller">Thriller</option>
+              <option value="Romance">Romance</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="rating">Rating (1-10)</label>
+            <input type="number" id="rating" name="rating" placeholder="0-10" min="0" max="10">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="watch_url">Where to Watch (URL)</label>
+          <input type="url" id="watch_url" name="watch_url" placeholder="https://www.netflix.com or https://www.primevideo.com">
+        </div>
+
+        <div class="form-group">
+          <label for="review">Review</label>
+          <textarea id="review" name="review" rows="4" placeholder="Write your review..."></textarea>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="watched" name="watched">
+          <label for="watched">I have watched this movie</label>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">Add Movie</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>

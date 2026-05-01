@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enhanced Movie Collection</title>
+  <link rel="stylesheet" href="/css/movies-enhanced.css">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>🎬 Movie Collection</h1>
+      <div class="filters">
+        <a href="/" class="filter-btn <%= filter === 'all' ? 'active' : '' %>">All</a>
+        <a href="/?filter=watched" class="filter-btn <%= filter === 'watched' ? 'active' : '' %>">Watched</a>
+        <a href="/?filter=watchlist" class="filter-btn <%= filter === 'watchlist' ? 'active' : '' %>">Watchlist</a>
+      </div>
+      <a href="/add" class="add-btn">+ Add Movie</a>
+    </header>
+
+    <section class="badges-section">
+      <h2>🏅 Your Rewards</h2>
+      <div class="watched-count">
+        <span class="count"><%= watchedCount %></span>
+        <span class="label">movies watched</span>
+      </div>
+      <div class="badges-container">
+        <% badges.forEach(badge => { %>
+          <div class="badge <%= watchedCount >= badge.threshold ? 'earned' : 'locked' %>" style="--badge-color: <%= badge.color %>">
+            <div class="badge-icon"><%= badge.icon %></div>
+            <div class="badge-name"><%= badge.name %></div>
+            <div class="badge-threshold">
+              <%= watchedCount >= badge.threshold ? '✓ Earned' : `${badge.threshold} movies needed` %>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <div class="progress-info">
+        <% let nextBadge = badges.find(b => watchedCount < b.threshold); %>
+        <% if (nextBadge) { %>
+          <p class="next-badge">
+            Next badge: <strong><%= nextBadge.icon %> <%= nextBadge.name %></strong> 
+            (<%= nextBadge.threshold - watchedCount %> more movies to watch!)
+          </p>
+        <% } else { %>
+          <p class="all-badges">🎉 Congratulations! You've earned all badges!</p>
+        <% } %>
+      </div>
+    </section>
+
+    <div class="movies-grid">
+      <% movies.forEach(movie => { %>
+        <div class="movie-card <%= movie.watched ? 'watched' : '' %>">
+          <div class="movie-poster">
+            <span class="year-badge"><%= movie.year %></span>
+            <span class="genre-tag"><%= movie.genre %></span>
+            <% if (movie.watch_url) { %>
+              <a href="<%= movie.watch_url %>" target="_blank" class="watch-btn">
+                ▶ Watch Now
+              </a>
+            <% } %>
+          </div>
+          <div class="movie-details">
+            <h3 class="movie-title"><%= movie.title %></h3>
+            <p class="movie-director">Directed by <%= movie.director %></p>
+            
+            <% if (movie.rating > 0) { %>
+              <div class="movie-rating">
+                <span class="stars">
+                  <% for(let i=0; i<10; i++) { %>
+                    <%= i < movie.rating ? '★' : '☆' %>
+                  <% } %>
+                </span>
+              </div>
+            <% } %>
+            
+            <% if (movie.review) { %>
+              <p class="movie-review">"<%= movie.review %>"</p>
+            <% } %>
+            
+            <div class="movie-actions">
+              <a href="/toggle/<%= movie.id %>" class="action-btn toggle">
+                <%= movie.watched ? '↩️ Unwatch' : '✓ Watched' %>
+              </a>
+              <a href="/delete/<%= movie.id %>" class="action-btn delete">🗑️ Delete</a>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+</body>
+</html>

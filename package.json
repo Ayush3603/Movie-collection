@@ -1,0 +1,22 @@
+{
+  "name": "mini-prj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node movie-server-enhanced.js",
+    "expense": "node expense-server.js",
+    "movies-old": "node movie-server.js",
+    "todo": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^2.2.2",
+    "ejs": "^5.0.2",
+    "express": "^5.2.1",
+    "sqlite3": "^6.0.1"
+  }
+}
